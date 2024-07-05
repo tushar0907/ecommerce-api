@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
+const productRoutes = require('./routes/productRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -18,11 +19,8 @@ app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
-// Placeholder for routes
-// app.use('/api/products', productRoutes);
-// app.use('/api/users', userRoutes);
-// app.use('/api/orders', orderRoutes);
-// app.use('/api/cart', cartRoutes);
+// Product routes
+app.use('/api/products', productRoutes);
 
 const PORT = process.env.PORT || 5000;
 
