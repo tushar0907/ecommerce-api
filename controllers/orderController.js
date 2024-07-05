@@ -1,53 +1,46 @@
 const asyncHandler = require('express-async-handler');
 const Order = require('../models/orderModel');
+const { processPayment } = require('../services/paymentService');
 
-// @desc    Create new order
-// @route   POST /api/orders
-// @access  Private
+// Create new order and process payment
 const addOrderItems = asyncHandler(async (req, res) => {
-  const {
-    orderItems,
-    shippingAddress,
-    paymentMethod,
-    itemsPrice,
-    taxPrice,
-    shippingPrice,
-    totalPrice,
-  } = req.body;
+  const { orderItems, shippingAddress, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice } = req.body;
 
   if (orderItems && orderItems.length === 0) {
     res.status(400);
     throw new Error('No order items');
-  } else {
-    const order = new Order({
-      user: req.user._id,
-      orderItems,
-      shippingAddress,
-      paymentMethod,
-      itemsPrice,
-      taxPrice,
-      shippingPrice,
-      totalPrice,
-    });
-
-    const createdOrder = await order.save();
-    res.status(201).json(createdOrder);
+    return;
   }
+
+  // Process payment
+  const paymentResult = await processPayment(totalPrice * 100, 'usd', paymentMethod.id, 'Ecommerce Order Payment');
+
+  const order = new Order({
+    user: req.user._id,
+    orderItems,
+    shippingAddress,
+    paymentMethod: paymentMethod.id,
+    itemsPrice,
+    taxPrice,
+    shippingPrice,
+    totalPrice,
+    isPaid: paymentResult.status === 'succeeded',
+    paidAt: paymentResult.status === 'succeeded' ? Date.now() : null,
+    paymentResult: {
+      id: paymentResult.id,
+      status: paymentResult.status,
+      update_time: paymentResult.created,
+      email_address: paymentResult.receipt_email,
+    },
+  });
+
+  const createdOrder = await order.save();
+  res.status(201).json(createdOrder);
 });
 
-// @desc    Get order by ID
-// @route   GET /api/orders/:id
-// @access  Private
-const getOrderById = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id).populate('user', 'name email');
-
-  if (order) {
-    res.json(order);
-  } else {
-    res.status(404);
-    throw new Error('Order not found');
-  }
-});
-
-// @desc    Update order to paid
-// @route   PUT /api/orders
+module.exports = {
+  addOrderItems,
+  getOrderById,
+  updateOrderToPaid,
+  getMyOrders,
+};
