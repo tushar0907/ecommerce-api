@@ -6,6 +6,7 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const errorHandler = require('./middlewares/errorHandler');
 
 // Load environment variables
 dotenv.config();
@@ -33,6 +34,9 @@ app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 // Cart routes
 app.use('/api/cart', cartRoutes);
+
+// Error handling middleware
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
