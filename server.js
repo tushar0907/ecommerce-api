@@ -4,6 +4,8 @@ const connectDB = require('./config/db');
 const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -27,6 +29,10 @@ app.use('/api/products', productRoutes);
 app.use('/api/users', authRoutes);
 // User profile routes
 app.use('/api/users', userRoutes);
+// Order routes
+app.use('/api/orders', orderRoutes);
+// Cart routes
+app.use('/api/cart', cartRoutes);
 
 const PORT = process.env.PORT || 5000;
 
