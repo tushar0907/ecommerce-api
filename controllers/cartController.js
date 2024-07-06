@@ -1,9 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const Cart = require('../models/cartModel');
 
-// @desc    Get user cart
-// @route   GET /api/cart
-// @access  Private
 const getUserCart = asyncHandler(async (req, res) => {
   const cart = await Cart.findOne({ user: req.user._id });
 
@@ -16,9 +13,6 @@ const getUserCart = asyncHandler(async (req, res) => {
 });
 
 
-// @desc    Add item to cart
-// @route   POST /api/cart
-// @access  Private
 const addItemToCart = asyncHandler(async (req, res) => {
   const { product, name, qty, image, price } = req.body;
 
@@ -45,9 +39,6 @@ const addItemToCart = asyncHandler(async (req, res) => {
   res.status(201).json({ message: 'Item added to cart' });
 });
 
-// @desc    Remove item from cart
-// @route   DELETE /api/cart/:id
-// @access  Private
 const removeItemFromCart = asyncHandler(async (req, res) => {
   const cart = await Cart.findOne({ user: req.user._id });
 

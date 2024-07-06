@@ -2,9 +2,6 @@ const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');
 const generateToken = require('../utils/generateToken');
 
-// @desc    Get user profile
-// @route   GET /api/users/profile
-// @access  Private
 const getUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
@@ -21,9 +18,6 @@ const getUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Update user profile
-// @route   PUT /api/users/profile
-// @access  Private
 const updateUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 

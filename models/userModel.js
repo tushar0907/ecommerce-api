@@ -27,7 +27,6 @@ const userSchema = mongoose.Schema(
   }
 );
 
-// Encrypt password before saving
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     next();
@@ -36,12 +35,10 @@ userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Match user entered password to hashed password in database
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Generate JWT
 userSchema.methods.getSignedJwtToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,

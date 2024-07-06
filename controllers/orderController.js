@@ -3,7 +3,6 @@ const Order = require('../models/orderModel');
 const { processPayment } = require('../services/paymentService');
 const { sendEmail } = require('../services/emailService');
 
-// Create new order and process payment
 const addOrderItems = asyncHandler(async (req, res) => {
   const { orderItems, shippingAddress, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice } = req.body;
 
@@ -13,7 +12,6 @@ const addOrderItems = asyncHandler(async (req, res) => {
     return;
   }
 
-  // Process payment
   const paymentResult = await processPayment(totalPrice * 100, 'usd', paymentMethod.id, 'Ecommerce Order Payment');
 
   const order = new Order({
@@ -37,9 +35,8 @@ const addOrderItems = asyncHandler(async (req, res) => {
 
   const createdOrder = await order.save();
 
-  // Send email notification
   const emailOptions = {
-    email: req.user.email, // Assuming req.user.email is the user's email address
+    email: req.user.email, 
     subject: 'Order Confirmation',
     message: `Your order (${order._id}) has been successfully placed.`,
   };
