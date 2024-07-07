@@ -14,6 +14,8 @@ connectDB();
 
 const app = express();
 
+//sever code here
+
 app.use(express.json());
 
 app.get('/', (req, res) => {
